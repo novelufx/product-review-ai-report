@@ -1,89 +1,64 @@
-# Steam 游戏评论 AI 口碑分析报告
+# Steam 评论口碑分析报告
 
-基于 Steam 游戏评论的 AI 智能分析工具 - 爬取评论、清洗数据、情感分析、AI 生成口碑报告、可视化图表。
+这是我为了联系用户反馈分析和可视化报告搭配AI辅助总结功能做的一个小项目。
 
-## 功能
+项目会从 Steam 公开评论接口获取游戏或软件的用户评论，对评论做清洗、统计和关键词分析，然后用大模型辅助总结用户反馈，最后生成一个静态网页报告。
 
-- 爬取 Steam 游戏评论（支持中文/英文）
-- 清洗和预处理评论数据
-- 关键词统计（jieba 分词）和情感分类
-- AI 生成核心痛点和改进建议（支持 Anthropic Claude API）
-- pyecharts 生成交互式图表
-- Jinja2 生成静态 HTML 报告
-- 支持 GitHub Pages 发布
+## 项目背景
 
-## 快速开始
+我在看 AI 产品实习岗位时发现，很多岗位都会要求做用户反馈整理、数据分析、竞品调研和产品改进建议。  
+所以我想做一个比较完整的小项目，模拟产品同学如何从大量用户评论中提炼有价值的信息。
 
-```bash
-# 1. 安装依赖
-pip install -r requirements.txt
+我选择 Steam 评论作为数据源，主要是因为它有公开评论接口，而且有「推荐 / 不推荐」字段，比较适合做口碑分析。
 
-# 2. 配置 API Key（可选，不配置则使用本地 fallback 模板）
-cp .env.example .env
-# 编辑 .env 填入你的 Anthropic API Key
+这个项目的重点不是爬虫本身，而是把用户评论转成一份能看的产品分析报告。
 
-# 3. 爬取 Steam 评论
-python main.py --crawl-steam 431960 --max-reviews 100
+## 主要功能
 
-# 4. 运行完整流程
-python main.py --all
-```
+目前项目支持：
 
-## 命令行参数
+- 根据 Steam AppID 获取公开评论
+- 清洗评论数据，去除空评论和重复评论
+- 将 Steam 的推荐 / 不推荐转换为简单评分和情绪标签
+- 统计评论数量、平均评分、评分分布和情绪占比
+- 使用 jieba 做中文分词，统计高频关键词
+- 调用大模型辅助总结：
+  - 用户认可的优点
+  - 用户集中反馈的问题
+  - 潜在需求
+  - 产品改进建议
+  - 运营建议
+- 生成带图表的 HTML 报告
+- 通过 GitHub Pages 发布报告页面
 
-```bash
-python main.py [OPTIONS]
+## 技术栈
 
-# 单步执行
-python main.py --crawl-steam APP_ID  # 爬取 Steam 评论
-python main.py --sample              # 生成模拟数据
-python main.py --clean               # 清洗数据
-python main.py --analyze             # 情感分析
-python main.py --ai                  # AI 报告
-python main.py --charts              # 生成图表
-python main.py --report              # 生成 HTML 报告
+- Python
+- requests
+- pandas
+- jieba
+- pyecharts
+- Jinja2
+- 大模型 API
+- GitHub Pages
 
-# 完整流程
-python main.py --all
+## 项目结构
 
-# 可选参数
---max-reviews N    # 最大爬取条数（默认 100）
---language LANG    # 评论语言（默认 schinese）
---input FILE       # 输入 CSV 文件路径
---output DIR       # 输出目录（默认 reports）
-```
-
-## 常用 Steam 游戏 ID
-
-| 游戏 | App ID |
-|------|--------|
-| Counter-Strike 2 | 730 |
-| Wallpaper Engine | 431960 |
-| Terraria | 105600 |
-| Stardew Valley | 413150 |
-
-## 目录结构
-
-```
+```text
 product-review-ai-report/
-├── data/              # 原始和清洗后的数据（gitignore）
-├── docs/              # GitHub Pages 输出目录
-├── reports/           # 生成的图表（gitignore）
-├── src/               # 源代码
-│   ├── crawler.py     # Steam 评论爬虫
-│   ├── cleaner.py     # 数据清洗
-│   ├── analyzer.py    # 情感分析
-│   ├── ai_report.py   # AI 报告生成
-│   ├── chart_generator.py  # 图表生成
-│   └── report_generator.py # HTML 报告生成
-├── templates/         # Jinja2 模板
-├── main.py            # 主入口
-└── requirements.txt   # 依赖
-```
-
-## GitHub Pages 部署
-
-1. 推送代码到 GitHub
-2. 在仓库设置中启用 GitHub Pages
-3. 选择 `docs/` 目录作为发布源
-4. 访问 `https://username.github.io/product-review-ai-report/`
+├── data/                 # 本地数据文件，不上传到 GitHub
+├── docs/                 # GitHub Pages 发布目录
+│   └── index.html
+├── reports/              # 中间图表文件
+├── src/
+│   ├── crawler.py        # Steam 评论获取
+│   ├── cleaner.py        # 数据清洗
+│   ├── analyzer.py       # 评分、情绪、关键词分析
+│   ├── ai_report.py      # 大模型总结
+│   ├── chart_generator.py
+│   └── report_generator.py
+├── templates/
+│   └── report_template.html
+├── main.py
+├── requirements.txt
+└── README.md
