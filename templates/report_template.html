@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>产品评论分析报告</title>
+    <title>Steam 游戏评论 AI 口碑分析报告</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
@@ -87,8 +87,8 @@
 
 <!-- Banner -->
 <div class="banner">
-    <h1>产品评论分析报告</h1>
-    <p>基于 {{ total_reviews }} 条用户评论的 AI 智能分析</p>
+    <h1>Steam 游戏评论 AI 口碑分析报告</h1>
+    <p>基于 {{ total_reviews }} 条玩家评论的 AI 智能分析</p>
 </div>
 
 <div class="container">
@@ -158,7 +158,7 @@
 
     <!-- 用户认可优点 -->
     <div class="card">
-        <h2>用户认可的优点</h2>
+        <h2>玩家认可的优点</h2>
         <ul class="point-list">
             {% for point in positive_points %}
             <li>{{ point }}</li>
@@ -168,7 +168,7 @@
 
     <!-- 核心痛点 -->
     <div class="card">
-        <h2>核心痛点</h2>
+        <h2>玩家核心痛点</h2>
         {% for p in pain_points %}
         <div class="pain-card {% if p.severity == 'medium' %}medium{% elif p.severity == 'low' %}low{% endif %}">
             <h3>
@@ -183,7 +183,7 @@
 
     <!-- 用户潜在需求 -->
     <div class="card">
-        <h2>用户潜在需求</h2>
+        <h2>玩家潜在需求</h2>
         <ul class="needs-list">
             {% for need in user_needs %}
             <li>{{ need }}</li>
@@ -242,7 +242,7 @@
         </div>
     </div>
 
-    <footer>Product Review AI Report · 自动生成</footer>
+    <footer>Steam 游戏评论 AI 口碑分析 · 自动生成</footer>
 
 </div>
 </body>

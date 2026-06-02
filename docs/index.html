@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>产品评论分析报告</title>
+    <title>Steam 游戏评论 AI 口碑分析报告</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
@@ -87,8 +87,8 @@
 
 <!-- Banner -->
 <div class="banner">
-    <h1>产品评论分析报告</h1>
-    <p>基于 88 条用户评论的 AI 智能分析</p>
+    <h1>Steam 游戏评论 AI 口碑分析报告</h1>
+    <p>基于 79 条玩家评论的 AI 智能分析</p>
 </div>
 
 <div class="container">
@@ -97,36 +97,21 @@
     <div class="card">
         <div class="stats">
             <div class="stat-box">
-                <div class="stat-value">88</div>
+                <div class="stat-value">79</div>
                 <div class="stat-label">总评论数</div>
             </div>
             <div class="stat-box">
-                <div class="stat-value">3.5</div>
+                <div class="stat-value">4.8</div>
                 <div class="stat-label">平均评分</div>
             </div>
             
             <div class="stat-box">
-                <div class="stat-value">7</div>
+                <div class="stat-value">3</div>
                 <div class="stat-label">1星</div>
             </div>
             
             <div class="stat-box">
-                <div class="stat-value">10</div>
-                <div class="stat-label">2星</div>
-            </div>
-            
-            <div class="stat-box">
-                <div class="stat-value">23</div>
-                <div class="stat-label">3星</div>
-            </div>
-            
-            <div class="stat-box">
-                <div class="stat-value">30</div>
-                <div class="stat-label">4星</div>
-            </div>
-            
-            <div class="stat-box">
-                <div class="stat-value">18</div>
+                <div class="stat-value">76</div>
                 <div class="stat-label">5星</div>
             </div>
             
@@ -136,26 +121,20 @@
         <div style="margin-top: 20px;">
             <div style="display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 4px;">
                 
-                <span>正向: 48条</span>
+                <span>正向: 76条</span>
                 
-                <span>负向: 17条</span>
-                
-                <span>中性: 23条</span>
+                <span>负向: 3条</span>
                 
             </div>
             <div class="sentiment-bar">
                 
                 
-                <div class="seg-positive" style="width: 54.5%;">
-                    54.5%
+                <div class="seg-positive" style="width: 96.2%;">
+                    96.2%
                 </div>
                 
-                <div class="seg-negative" style="width: 19.3%;">
-                    19.3%
-                </div>
-                
-                <div class="seg-neutral" style="width: 26.1%;">
-                    26.1%
+                <div class="seg-negative" style="width: 3.8%;">
+                    3.8%
                 </div>
                 
             </div>
@@ -165,7 +144,7 @@
     <!-- AI 总结 -->
     <div class="card">
         <h2>AI 总结</h2>
-        <p style="font-size: 15px; line-height: 1.8;">产品在性价比和核心功能上获得了积极认可，但在质量、稳定性和服务方面存在明显短板，导致口碑分化，整体处于中等偏上水平。</p>
+        <p style="font-size: 15px; line-height: 1.8;">产品被誉为'Steam真神'，口碑极高，用户忠诚度强，但社区管理与技术稳定性问题正在损害核心创作者的热情与体验。</p>
     </div>
 
     <!-- 图表 -->
@@ -183,11 +162,11 @@
     
 </head>
 <body >
-    <div id="0c47c9d15ab54d7eba029f5857c78aa4" class="chart-container" style="width:500px; height:350px; "></div>
+    <div id="f8ae89bcc6944abbb1042a9472ce981d" class="chart-container" style="width:500px; height:350px; "></div>
     <script>
-        var chart_0c47c9d15ab54d7eba029f5857c78aa4 = echarts.init(
-            document.getElementById('0c47c9d15ab54d7eba029f5857c78aa4'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
-        var option_0c47c9d15ab54d7eba029f5857c78aa4 = {
+        var chart_f8ae89bcc6944abbb1042a9472ce981d = echarts.init(
+            document.getElementById('f8ae89bcc6944abbb1042a9472ce981d'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_f8ae89bcc6944abbb1042a9472ce981d = {
     "animation": true,
     "animationThreshold": 2000,
     "animationDuration": 1000,
@@ -228,15 +207,11 @@
             "data": [
                 {
                     "name": "\u6b63\u5411",
-                    "value": 48
+                    "value": 76
                 },
                 {
                     "name": "\u8d1f\u5411",
-                    "value": 17
-                },
-                {
-                    "name": "\u4e2d\u6027",
-                    "value": 23
+                    "value": 3
                 }
             ],
             "radius": [
@@ -269,8 +244,7 @@
         {
             "data": [
                 "\u6b63\u5411",
-                "\u8d1f\u5411",
-                "\u4e2d\u6027"
+                "\u8d1f\u5411"
             ],
             "selected": {},
             "show": true,
@@ -336,11 +310,10 @@
     ],
     "color": [
         "#52c41a",
-        "#f5222d",
-        "#faad14"
+        "#f5222d"
     ]
 };
-        chart_0c47c9d15ab54d7eba029f5857c78aa4.setOption(option_0c47c9d15ab54d7eba029f5857c78aa4);
+        chart_f8ae89bcc6944abbb1042a9472ce981d.setOption(option_f8ae89bcc6944abbb1042a9472ce981d);
     </script>
 </body>
 </html>
@@ -356,11 +329,11 @@
     
 </head>
 <body >
-    <div id="dd34cb689b8d4e82b33e014b1313590e" class="chart-container" style="width:500px; height:350px; "></div>
+    <div id="431464622fc54951af160ed26288ab2f" class="chart-container" style="width:500px; height:350px; "></div>
     <script>
-        var chart_dd34cb689b8d4e82b33e014b1313590e = echarts.init(
-            document.getElementById('dd34cb689b8d4e82b33e014b1313590e'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
-        var option_dd34cb689b8d4e82b33e014b1313590e = {
+        var chart_431464622fc54951af160ed26288ab2f = echarts.init(
+            document.getElementById('431464622fc54951af160ed26288ab2f'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_431464622fc54951af160ed26288ab2f = {
     "animation": true,
     "animationThreshold": 2000,
     "animationDuration": 1000,
@@ -378,11 +351,8 @@
             "name": "\u8bc4\u8bba\u6570",
             "legendHoverLink": true,
             "data": [
-                7,
-                10,
-                23,
-                30,
-                18
+                3,
+                76
             ],
             "realtimeSort": false,
             "showBackground": false,
@@ -490,9 +460,6 @@
             "animationDelayUpdate": 0,
             "data": [
                 "1\u661f",
-                "2\u661f",
-                "3\u661f",
-                "4\u661f",
                 "5\u661f"
             ]
         }
@@ -543,7 +510,7 @@
         }
     ]
 };
-        chart_dd34cb689b8d4e82b33e014b1313590e.setOption(option_dd34cb689b8d4e82b33e014b1313590e);
+        chart_431464622fc54951af160ed26288ab2f.setOption(option_431464622fc54951af160ed26288ab2f);
     </script>
 </body>
 </html>
@@ -560,11 +527,11 @@
     
 </head>
 <body >
-    <div id="885a616e7d434622962e1af354baa321" class="chart-container" style="width:700px; height:400px; "></div>
+    <div id="d9f40a523e06488080e01c785139baa8" class="chart-container" style="width:700px; height:400px; "></div>
     <script>
-        var chart_885a616e7d434622962e1af354baa321 = echarts.init(
-            document.getElementById('885a616e7d434622962e1af354baa321'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
-        var option_885a616e7d434622962e1af354baa321 = {
+        var chart_d9f40a523e06488080e01c785139baa8 = echarts.init(
+            document.getElementById('d9f40a523e06488080e01c785139baa8'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_d9f40a523e06488080e01c785139baa8 = {
     "animation": true,
     "animationThreshold": 2000,
     "animationDuration": 1000,
@@ -582,21 +549,21 @@
             "name": "\u51fa\u73b0\u6b21\u6570",
             "legendHoverLink": true,
             "data": [
-                17,
-                13,
-                10,
+                18,
                 8,
-                8,
+                7,
                 7,
                 7,
                 6,
                 6,
-                6,
-                6,
-                6,
-                6,
-                6,
-                6
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5
             ],
             "realtimeSort": false,
             "showBackground": false,
@@ -741,21 +708,21 @@
             "animationEasingUpdate": "cubicOut",
             "animationDelayUpdate": 0,
             "data": [
-                "\u597d\u8bc4",
+                "\u89c6\u9891",
+                "\u4e3e\u62a5",
+                "\u8f6f\u4ef6",
+                "\u4ec0\u4e48",
+                "\u6709\u4e9b",
+                "\u597d\u597d",
+                "\u5c31\u662f",
+                "\u53f8\u673a",
+                "\u597d\u73a9",
                 "\u63a8\u8350",
-                "\u505a\u5de5",
-                "\u5931\u671b",
-                "\u6ee1\u610f",
-                "\u4ef7\u683c",
-                "\u4f53\u9a8c",
-                "\u4e24\u5468",
-                "\u5305\u88c5",
-                "\u7cbe\u7f8e",
-                "\u4e94\u661f",
-                "\u8d28\u91cf",
-                "\u989c\u503c",
-                "\u6309\u952e",
-                "\u677e\u52a8"
+                "\u4f60\u4eec",
+                "\u563b\u563b",
+                "\u81ea\u5df1",
+                "\u6211\u4eec",
+                "\u683c\u5f0f"
             ]
         }
     ],
@@ -774,7 +741,7 @@
         }
     ]
 };
-        chart_885a616e7d434622962e1af354baa321.setOption(option_885a616e7d434622962e1af354baa321);
+        chart_d9f40a523e06488080e01c785139baa8.setOption(option_d9f40a523e06488080e01c785139baa8);
     </script>
 </body>
 </html>
@@ -786,139 +753,112 @@
         <h2>高频关键词</h2>
         <div class="tags">
             
-            <span class="tag">好评<span class="count">17</span></span>
+            <span class="tag">视频<span class="count">18</span></span>
             
-            <span class="tag">推荐<span class="count">13</span></span>
+            <span class="tag">举报<span class="count">8</span></span>
             
-            <span class="tag">做工<span class="count">10</span></span>
+            <span class="tag">软件<span class="count">7</span></span>
             
-            <span class="tag">失望<span class="count">8</span></span>
+            <span class="tag">什么<span class="count">7</span></span>
             
-            <span class="tag">满意<span class="count">8</span></span>
+            <span class="tag">有些<span class="count">7</span></span>
             
-            <span class="tag">价格<span class="count">7</span></span>
+            <span class="tag">好好<span class="count">6</span></span>
             
-            <span class="tag">体验<span class="count">7</span></span>
+            <span class="tag">就是<span class="count">6</span></span>
             
-            <span class="tag">两周<span class="count">6</span></span>
+            <span class="tag">司机<span class="count">5</span></span>
             
-            <span class="tag">包装<span class="count">6</span></span>
+            <span class="tag">好玩<span class="count">5</span></span>
             
-            <span class="tag">精美<span class="count">6</span></span>
+            <span class="tag">推荐<span class="count">5</span></span>
             
-            <span class="tag">五星<span class="count">6</span></span>
+            <span class="tag">你们<span class="count">5</span></span>
             
-            <span class="tag">质量<span class="count">6</span></span>
+            <span class="tag">嘻嘻<span class="count">5</span></span>
             
-            <span class="tag">颜值<span class="count">6</span></span>
+            <span class="tag">自己<span class="count">5</span></span>
             
-            <span class="tag">按键<span class="count">6</span></span>
+            <span class="tag">我们<span class="count">5</span></span>
             
-            <span class="tag">松动<span class="count">6</span></span>
+            <span class="tag">格式<span class="count">5</span></span>
             
-            <span class="tag">噪音<span class="count">6</span></span>
+            <span class="tag">上传<span class="count">5</span></span>
             
-            <span class="tag">续航<span class="count">6</span></span>
+            <span class="tag">不错<span class="count">4</span></span>
             
-            <span class="tag">整体<span class="count">6</span></span>
+            <span class="tag">好看<span class="count">4</span></span>
             
-            <span class="tag">音质<span class="count">6</span></span>
+            <span class="tag">资源<span class="count">4</span></span>
             
-            <span class="tag">清晰<span class="count">6</span></span>
+            <span class="tag">壁纸<span class="count">4</span></span>
             
         </div>
     </div>
 
     <!-- 用户认可优点 -->
     <div class="card">
-        <h2>用户认可的优点</h2>
+        <h2>玩家认可的优点</h2>
         <ul class="point-list">
             
-            <li>性价比高，普遍认为‘对得起这个价格’、‘物超所值’</li>
+            <li>内容生态质量高，汇聚了大量高质量创作者与资源（证据：'有好多的高质量作者推荐推荐！！！'、'很好的软件'）。</li>
             
-            <li>核心功能表现突出，如‘画质出色’、‘音质清晰’</li>
+            <li>娱乐性与沉浸感强，被认为是'好玩'的'神器'（证据：'好玩是好玩就是有点累'、'好用好用，神器'、'小红车太好玩了'）。</li>
             
-            <li>设计美观、做工精致，‘颜值很高’、‘包装精美’获得好评</li>
+            <li>软件本身设计优秀，视觉体验突出，尤其适合高端显示器用户（证据：'直到我换了OLED显示器'、'动画片很好看'）。</li>
             
-            <li>部分用户体验良好，‘运行流畅’、‘续航给力’</li>
+            <li>在Steam平台拥有极高的口碑和地位（证据：'据说是Steam上评价最好的软件之一'、'steam唯一真神'）。</li>
+            
+            <li>社区氛围受到部分核心用户的深度认同和维护（证据：'国内唯一一块净土，没有人污染的净土'、'打倒熬狗，挺红车'）。</li>
             
         </ul>
     </div>
 
     <!-- 核心痛点 -->
     <div class="card">
-        <h2>核心痛点</h2>
+        <h2>玩家核心痛点</h2>
         
         <div class="pain-card ">
             <h3>
-                硬件质量与做工问题突出
+                恶意举报与平台审核机制引发创作者生存危机
                 <span class="badge badge-high">高</span>
             </h3>
-            <p>产品物理结构存在缺陷，影响基础使用感受和品质感知。</p>
-            <p class="evidence">依据：‘按键松动，做工也很粗糙’；‘做工也很粗糙，踩雷了’（高频出现）</p>
-        </div>
-        
-        <div class="pain-card ">
-            <h3>
-                产品稳定性与可靠性差
-                <span class="badge badge-high">高</span>
-            </h3>
-            <p>设备在软件或硬件层面不稳定，导致卡顿、闪退、功能异常，严重影响使用。</p>
-            <p class="evidence">依据：‘连接不稳定’；‘经常卡顿’；‘频繁闪退’；‘bug太多了’（高频出现）</p>
+            <p>用户（尤其是核心内容创作者）投入巨大精力搜集、处理、上传内容，却因其他用户恶意举报（可能出于竞争、恶作剧或误解）而遭致内容下架、账号封禁，导致创作激情丧失，威胁整个内容生态的根基。</p>
+            <p class="evidence">依据：用户长篇控诉：'搞崩一个老司机真的很简单，你只需要把他所有的作品点上一遍举报...他以后就再也不会更新视频了'；'传了半天的文件，就因为一个小小的举报就没了...激情没了，上传的动力没了'；'随便发了几个视频把我账号封了'。</p>
         </div>
         
         <div class="pain-card medium">
             <h3>
-                存在明显的功能缺陷
+                应用稳定性不足，存在连接或运行问题
                 <span class="badge badge-medium">中</span>
             </h3>
-            <p>产品在发热、噪音、信号、续航等基础性能上未达到用户预期。</p>
-            <p class="evidence">依据：‘发热严重’；‘噪音太大’；‘信号差’；‘耗电快’、‘续航差’</p>
+            <p>部分用户反馈软件存在频繁掉线或崩溃的技术问题，直接影响基础使用体验。</p>
+            <p class="evidence">依据：负向评论：'老是掉'。</p>
         </div>
         
         <div class="pain-card medium">
             <h3>
-                售后服务与物流体验不佳
+                社区管理与规则存在争议，易引发用户对立
                 <span class="badge badge-medium">中</span>
             </h3>
-            <p>客服响应和物流时效拖累了整体购物和使用体验。</p>
-            <p class="evidence">依据：‘客服回复也很慢’；‘等了好久才发货’</p>
-        </div>
-        
-        <div class="pain-card medium">
-            <h3>
-                开箱体验与配件问题
-                <span class="badge badge-medium">中</span>
-            </h3>
-            <p>部分产品到手即损坏或配件不全，导致首次体验极差。</p>
-            <p class="evidence">依据：‘收到就有问题’；‘配件缺失’；‘跟描述不符’</p>
-        </div>
-        
-        <div class="pain-card low">
-            <h3>
-                产品说明书不清晰
-                <span class="badge badge-low">低</span>
-            </h3>
-            <p>文档指导性不足，增加了用户的使用和学习成本。</p>
-            <p class="evidence">依据：‘说明书不清楚’</p>
+            <p>平台对内容（特别是R18内容）的管理尺度、举报处理流程不透明或执行不一致，导致用户（上传者、举报者、普通浏览者）之间产生矛盾，破坏社区和谐。</p>
+            <p class="evidence">依据：举报者与上传者的激烈对立描述；用户提及'煞笔管理员'的抱怨。</p>
         </div>
         
     </div>
 
     <!-- 用户潜在需求 -->
     <div class="card">
-        <h2>用户潜在需求</h2>
+        <h2>玩家潜在需求</h2>
         <ul class="needs-list">
             
-            <li>可靠耐用的产品质量，避免频繁出现故障</li>
+            <li>稳定可靠的基础服务：用户需要一个不会频繁掉线、能稳定运行的软件。</li>
             
-            <li>稳定流畅、功能正常的使用体验</li>
+            <li>公平、透明、有申诉渠道的社区治理规则：创作者需要其劳动成果得到尊重和保护，避免被恶意举报轻易摧毁；普通用户也需要清晰的规则来判断行为边界。</li>
             
-            <li>高性价比，物有所值</li>
+            <li>高效、易用的内容管理工具：帮助创作者和浏览者更好地筛选、过滤、管理内容（例如，用户建议的'拉黑功能'）。</li>
             
-            <li>及时、专业的客户服务支持</li>
-            
-            <li>清晰的使用指引和完善的配件</li>
+            <li>成就感与归属感：核心创作者分享的动力不仅来自内容本身，更来自社区的尊重与认同，他们需要这种精神激励。</li>
             
         </ul>
     </div>
@@ -930,40 +870,40 @@
         <div class="suggestion-item">
             <span class="badge badge-high">高优</span>
             <div>
-                <strong>优化硬件制造与品控</strong>
-                <div class="reason">做工粗糙和按键松动是最高频的负面反馈，严重损害产品口碑，是提升用户满意度的基石。</div>
+                <strong>重构举报与处罚机制，建立创作者保护体系</strong>
+                <div class="reason">这是当前最尖锐的矛盾，直接威胁到产品的核心资产（内容创作者）。必须优先解决以稳定生态。</div>
             </div>
         </div>
         
         <div class="suggestion-item">
             <span class="badge badge-high">高优</span>
             <div>
-                <strong>系统与软件稳定性攻坚</strong>
-                <div class="reason">连接、卡顿、闪退、Bug多等问题导致核心使用体验崩坏，需投入研发资源彻底排查和修复。</div>
+                <strong>优化应用底层架构，提升连接与运行稳定性</strong>
+                <div class="reason">'老是掉'虽然评论简短，但属于基础体验缺陷，影响所有用户，是产品可靠性的底线。</div>
             </div>
         </div>
         
         <div class="suggestion-item">
             <span class="badge badge-medium">中优</span>
             <div>
-                <strong>建立快速客户服务与问题产品召回机制</strong>
-                <div class="reason">客服响应慢和发货延迟加剧了用户负面情绪，针对‘收到就有问题’等情况应有快速的退换货或上门维修通道。</div>
+                <strong>增加内容过滤与个性化管理功能（如拉黑、自定义屏蔽）</strong>
+                <div class="reason">正向评论中已有用户提出'拉黑功能'需求。这能赋予用户更多控制权，提升浏览体验，并能部分减少不受欢迎内容引发的举报。</div>
             </div>
         </div>
         
         <div class="suggestion-item">
             <span class="badge badge-medium">中优</span>
             <div>
-                <strong>针对具体性能缺陷进行优化</strong>
-                <div class="reason">对于发热、噪音、信号、续航等集中的功能性投诉，应成立专项小组进行硬件或算法层面的优化迭代。</div>
+                <strong>设立清晰的社区公约、举报处理流程与创作者申诉通道</strong>
+                <div class="reason">解决规则模糊和执行不公的问题，让用户（尤其是创作者）感到被公平对待，减少对立情绪。</div>
             </div>
         </div>
         
         <div class="suggestion-item">
             <span class="badge badge-low">低优</span>
             <div>
-                <strong>完善产品附件与文档</strong>
-                <div class="reason">优化包装内配件清单的检查流程，并重新设计用户手册，使其更图文并茂、易于理解。</div>
+                <strong>建立创作者激励与认证体系，强化社区正能量</strong>
+                <div class="reason">满足核心创作者的精神需求，将'分享'文化制度化、荣誉化，鼓励优质内容持续产出。</div>
             </div>
         </div>
         
@@ -974,13 +914,13 @@
         <h2>营销与运营建议</h2>
         <ul class="marketing-list">
             
-            <li>强化‘性价比’和核心卖点（如画质、音质）的宣传，吸引价格敏感型用户，并引导已有满意用户进行‘朋友推荐’式传播</li>
+            <li>主打'Steam口碑之王'和'创作神器'定位，利用极高平均评分和正面评价进行口碑营销，突出'好用好玩'的核心体验。</li>
             
-            <li>营销内容可围绕‘用了两周，依然满意’等时间维度展开，突出产品的耐用性和长期价值，建立信任</li>
+            <li>讲述'创作者故事'，将核心用户（'老司机'）的热爱、付出与社区文化（虽伴随争议）作为营销素材，塑造有温度、有坚持的品牌形象，吸引有分享精神的用户。</li>
             
-            <li>建立用户社群或晒单有奖活动，鼓励正向口碑分享，同时将社群作为快速收集问题、安抚不满用户的前线渠道</li>
+            <li>与显示器（特别是OLED）、显卡等硬件厂商进行跨界营销或场景化推荐，绑定'极致视觉体验'的使用场景。</li>
             
-            <li>针对物流和客服问题，可在营销中承诺‘发货时效’和‘客服XX分钟响应’，并切实做到，将服务短板转化为营销亮点</li>
+            <li>运营层面：1) 定期举办官方认可的优质内容创作者评选或奖励活动，对冲恶意举报的负面影响；2) 开设官方反馈与建议渠道，让用户（尤其是创作者）的声音能被直接听到；3) 在遵守规定的前提下，可考虑为创作者提供更便捷的内容上传工具或支持（如批量转换格式）。</li>
             
         </ul>
     </div>
@@ -1001,73 +941,73 @@
                 <tbody>
                     
                     <tr>
-                        <td>R0029</td>
-                        <td>热心的买家</td>
-                        <td class="rating-stars">★★★☆☆</td>
-                        <td>凑合用，将就着用，对得起这个价格。</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>R0009</td>
-                        <td>认真的小白</td>
-                        <td class="rating-stars">★☆☆☆☆</td>
-                        <td>按键松动，做工也很粗糙，踩雷了。</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>R0088</td>
-                        <td>低调的用户</td>
-                        <td class="rating-stars">★★★☆☆</td>
-                        <td>整体一般吧，体验普通，中规中矩。</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>R0015</td>
-                        <td>低调的买家</td>
-                        <td class="rating-stars">★★★★☆</td>
-                        <td>第一次买这个品牌，噪音小，超出预期。</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>R0026</td>
-                        <td>认真的粉丝</td>
+                        <td></td>
+                        <td>76561199160862249</td>
                         <td class="rating-stars">★★★★★</td>
-                        <td>朋友推荐的，运行流畅，果然没让我失望。</td>
+                        <td>很好 很棒！！！！！！！！！！！！！！！！</td>
                     </tr>
                     
                     <tr>
-                        <td>R0060</td>
-                        <td>爱买的网友</td>
-                        <td class="rating-stars">★☆☆☆☆</td>
-                        <td>噪音太大，声音失真，影响使用。</td>
+                        <td></td>
+                        <td>76561199642412329</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>特别好，great</td>
                     </tr>
                     
                     <tr>
-                        <td>R0083</td>
-                        <td>爱买的测评君</td>
-                        <td class="rating-stars">★★★☆☆</td>
-                        <td>经常卡顿，做工也很粗糙，踩雷了。</td>
+                        <td></td>
+                        <td>76561199819304199</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>满分</td>
                     </tr>
                     
                     <tr>
-                        <td>R0025</td>
-                        <td>普通的路人</td>
-                        <td class="rating-stars">★★★★☆</td>
-                        <td>功能强大，操作简单，非常满意！</td>
+                        <td></td>
+                        <td>76561199733492587</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>看片非常爽 666</td>
                     </tr>
                     
                     <tr>
-                        <td>R0069</td>
-                        <td>快乐的网友</td>
-                        <td class="rating-stars">★★★☆☆</td>
-                        <td>马马虎虎，体验普通，能接受。</td>
+                        <td></td>
+                        <td>76561198427400581</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>伟大，无需多言。</td>
                     </tr>
                     
                     <tr>
-                        <td>R0023</td>
-                        <td>暴躁的买家</td>
-                        <td class="rating-stars">★★★☆☆</td>
-                        <td>跟描述不符，连接不稳定，很失望。</td>
+                        <td></td>
+                        <td>76561199606991384</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>别问我为什么每天晚上都要玩这个游戏</td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>76561198767304860</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>h</td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>76561199847849510</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>😋😋😋</td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>76561199032247270</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>最好玩的fps</td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>76561199852903731</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>能看片</td>
                     </tr>
                     
                 </tbody>
@@ -1075,7 +1015,7 @@
         </div>
     </div>
 
-    <footer>Product Review AI Report · 自动生成</footer>
+    <footer>Steam 游戏评论 AI 口碑分析 · 自动生成</footer>
 
 </div>
 </body>

@@ -18,9 +18,21 @@ def main():
     parser.add_argument("--ai", action="store_true", help="仅生成 AI 报告")
     parser.add_argument("--charts", action="store_true", help="仅生成图表")
     parser.add_argument("--report", action="store_true", help="生成最终 HTML 报告到 docs/")
+    parser.add_argument("--all", action="store_true", help="运行完整流程")
+    parser.add_argument("--crawl-steam", type=str, metavar="APP_ID", help="爬取 Steam 游戏评论（如 730）")
+    parser.add_argument("--max-reviews", type=int, default=100, help="最大爬取条数（默认 100）")
+    parser.add_argument("--language", type=str, default="schinese", help="评论语言（默认 schinese）")
     args = parser.parse_args()
 
     data_dir = Path("data")
+
+    # 爬取 Steam 评论
+    if args.crawl_steam:
+        from src.crawler import crawl_steam_reviews, SteamReviewCrawler
+        reviews = crawl_steam_reviews(args.crawl_steam, max_reviews=args.max_reviews, language=args.language)
+        SteamReviewCrawler().save(reviews, data_dir / "raw_reviews.csv")
+        print(f"\n下一步: python main.py --clean")
+        return
 
     # 生成模拟数据（不需要第三方依赖）
     if args.sample:
@@ -83,6 +95,58 @@ def main():
         report_gen = ReportGenerator()
         report_gen.generate(data_dir, docs_dir)
         print(f"报告已生成 -> docs/index.html")
+        return
+
+    # 运行完整流程
+    if args.all:
+        raw_path = data_dir / "raw_reviews.csv"
+        cleaned_path = data_dir / "cleaned_reviews.csv"
+        analysis_path = data_dir / "analysis_result.json"
+        ai_path = data_dir / "ai_report.json"
+
+        # Step 1: 模拟数据
+        if not raw_path.exists():
+            from src.sample_data import generate_sample_data, save_to_csv
+            reviews = generate_sample_data(100)
+            save_to_csv(reviews, raw_path)
+            print(f"[1/6] 模拟数据已生成: {len(reviews)} 条 -> data/raw_reviews.csv")
+        else:
+            print(f"[1/6] 跳过: data/raw_reviews.csv 已存在")
+
+        # Step 2: 清洗
+        from src.cleaner import ReviewCleaner
+        cleaner = ReviewCleaner()
+        cleaned, stats = cleaner.clean(str(raw_path))
+        cleaner.save(cleaned, cleaned_path)
+        print(f"[2/6] 清洗完成: {stats['raw_count']} -> {stats['cleaned_count']} 条 -> data/cleaned_reviews.csv")
+
+        # Step 3: 分析
+        from src.analyzer import SentimentAnalyzer
+        analyzer = SentimentAnalyzer()
+        result = analyzer.analyze(str(cleaned_path))
+        analyzer.save(result, analysis_path)
+        print(f"[3/6] 分析完成: 评分 {result['average_rating']}, 情感 {result['sentiment_counts']} -> data/analysis_result.json")
+
+        # Step 4: AI 报告
+        from src.ai_report import AIReportGenerator
+        ai_gen = AIReportGenerator()
+        report = ai_gen.generate()
+        ai_gen.save(report, ai_path)
+        print(f"[4/6] AI 报告完成: {len(report.get('pain_points', []))} 个痛点 -> data/ai_report.json")
+
+        # Step 5: 图表
+        from src.chart_generator import ChartGenerator
+        chart_gen = ChartGenerator()
+        docs_dir = Path("docs")
+        fragments = chart_gen.generate_all(analysis_path, docs_dir)
+        print(f"[5/6] 图表完成: {', '.join(f'{n}({len(h)}B)' for n, h in fragments.items())} -> docs/")
+
+        # Step 6: 最终报告
+        from src.report_generator import ReportGenerator
+        report_gen = ReportGenerator()
+        report_gen.generate(data_dir, docs_dir)
+        print(f"[6/6] 报告完成 -> docs/index.html")
+        print("\n全流程完成!")
         return
 
     output_dir = Path(args.output)
