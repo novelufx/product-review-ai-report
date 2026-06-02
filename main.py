@@ -15,6 +15,9 @@ def main():
     parser.add_argument("--sample", action="store_true", help="生成 100 条模拟评论数据")
     parser.add_argument("--clean", action="store_true", help="仅执行数据清洗")
     parser.add_argument("--analyze", action="store_true", help="仅执行情感分析")
+    parser.add_argument("--ai", action="store_true", help="仅生成 AI 报告")
+    parser.add_argument("--charts", action="store_true", help="仅生成图表")
+    parser.add_argument("--report", action="store_true", help="生成最终 HTML 报告到 docs/")
     args = parser.parse_args()
 
     data_dir = Path("data")
@@ -51,6 +54,37 @@ def main():
         print(f"已保存 -> data/analysis_result.json")
         return
 
+    # 仅生成 AI 报告
+    if args.ai:
+        from src.ai_report import AIReportGenerator
+        ai_gen = AIReportGenerator()
+        report = ai_gen.generate()
+        ai_gen.save(report, data_dir / "ai_report.json")
+        print(f"总结: {report['summary']}")
+        print(f"痛点数: {len(report['pain_points'])}")
+        print(f"已保存 -> data/ai_report.json")
+        return
+
+    # 仅生成图表
+    if args.charts:
+        from src.chart_generator import ChartGenerator
+        output_dir = Path(args.output)
+        chart_gen = ChartGenerator()
+        fragments = chart_gen.generate_all(data_dir / "analysis_result.json", output_dir)
+        for name, html in fragments.items():
+            print(f"  {name}_chart.html ({len(html)} bytes)")
+        print(f"已保存 -> {output_dir}/")
+        return
+
+    # 生成最终 HTML 报告
+    if args.report:
+        from src.report_generator import ReportGenerator
+        docs_dir = Path("docs")
+        report_gen = ReportGenerator()
+        report_gen.generate(data_dir, docs_dir)
+        print(f"报告已生成 -> docs/index.html")
+        return
+
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -83,15 +117,14 @@ def main():
     # Step 4: AI 报告
     from src.ai_report import AIReportGenerator
     ai_gen = AIReportGenerator()
-    report_data = ai_gen.generate(analyzed)
+    report_data = ai_gen.generate()
+    ai_gen.save(report_data, data_dir / "ai_report.json")
     print("AI 报告生成完成")
 
     # Step 5: 生成图表
     from src.chart_generator import ChartGenerator
     chart_gen = ChartGenerator()
-    chart_gen.generate_sentiment_chart(analyzed, output_dir / "sentiment_chart.html")
-    chart_gen.generate_keyword_chart(analyzed, output_dir / "keyword_chart.html")
-    chart_gen.generate_rating_chart(analyzed, output_dir / "rating_chart.html")
+    fragments = chart_gen.generate_all(data_dir / "analysis_result.json", output_dir)
     print("图表生成完成")
 
     # Step 6: 生成 HTML 报告

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品评论分析报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
+
+        /* Banner */
+        .banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 48px 24px 56px; text-align: center; position: relative; overflow: hidden; }
+        .banner::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 40px; background: #f0f2f5; border-radius: 50% 50% 0 0; }
+        .banner h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .banner p { font-size: 15px; opacity: 0.85; }
+
+        /* Layout */
+        .container { max-width: 960px; margin: -24px auto 0; padding: 0 16px 40px; position: relative; z-index: 1; }
+
+        /* Cards */
+        .card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+        .card h2 { font-size: 17px; color: #1a1a1a; border-left: 4px solid #667eea; padding-left: 12px; margin-bottom: 20px; }
+
+        /* Stats grid */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .stat-box { text-align: center; padding: 20px 8px; background: linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%); border-radius: 10px; }
+        .stat-value { font-size: 2em; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+        /* Sentiment bar */
+        .sentiment-bar { display: flex; border-radius: 8px; overflow: hidden; height: 28px; margin-top: 12px; }
+        .sentiment-bar div { display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 600; }
+        .seg-positive { background: #52c41a; }
+        .seg-neutral { background: #faad14; }
+        .seg-negative { background: #ff4d4f; }
+
+        /* Charts */
+        .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 640px) { .charts { grid-template-columns: 1fr; } }
+
+        /* Positive points */
+        .point-list { list-style: none; padding: 0; }
+        .point-list li { padding: 10px 14px; margin-bottom: 8px; background: #f6ffed; border-left: 4px solid #52c41a; border-radius: 6px; font-size: 14px; }
+
+        /* Pain points */
+        .pain-card { background: #fafafa; border-radius: 10px; padding: 18px; margin-bottom: 14px; border-left: 5px solid #ff4d4f; }
+        .pain-card.medium { border-left-color: #faad14; }
+        .pain-card.low { border-left-color: #52c41a; }
+        .pain-card h3 { font-size: 15px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .pain-card p { font-size: 14px; color: #555; margin-bottom: 4px; }
+        .pain-card .evidence { font-style: italic; color: #888; font-size: 13px; }
+        .badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 12px; color: #fff; font-weight: 600; }
+        .badge-high { background: #ff4d4f; }
+        .badge-medium { background: #faad14; }
+        .badge-low { background: #52c41a; }
+
+        /* Suggestions */
+        .suggestion-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item strong { font-size: 14px; }
+        .suggestion-item .reason { font-size: 13px; color: #666; margin-top: 2px; }
+
+        /* Keyword tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { display: inline-block; background: linear-gradient(135deg, #e6f4ff, #dbeafe); color: #3b82f6; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+        .tag .count { color: #93c5fd; margin-left: 4px; font-size: 11px; }
+
+        /* Needs list */
+        .needs-list { list-style: none; padding: 0; }
+        .needs-list li { padding: 10px 14px; margin-bottom: 8px; background: #fff7e6; border-left: 4px solid #faad14; border-radius: 6px; font-size: 14px; }
+
+        /* Marketing */
+        .marketing-list { list-style: none; padding: 0; }
+        .marketing-list li { padding: 10px 14px; margin-bottom: 8px; background: #f0f5ff; border-left: 4px solid #2f54eb; border-radius: 6px; font-size: 14px; }
+
+        /* Reviews table */
+        .review-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .review-table th { background: #f5f7fa; padding: 10px 12px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #e8e8e8; }
+        .review-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        .review-table tr:hover td { background: #fafafa; }
+        .rating-stars { color: #faad14; letter-spacing: 1px; }
+
+        footer { text-align: center; color: #bbb; font-size: 13px; margin-top: 32px; padding: 24px 0; }
+    </style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <h1>产品评论分析报告</h1>
+    <p>基于 88 条用户评论的 AI 智能分析</p>
+</div>
+
+<div class="container">
+
+    <!-- 核心指标 -->
+    <div class="card">
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value">88</div>
+                <div class="stat-label">总评论数</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">3.5</div>
+                <div class="stat-label">平均评分</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">7</div>
+                <div class="stat-label">1星</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">10</div>
+                <div class="stat-label">2星</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">23</div>
+                <div class="stat-label">3星</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">30</div>
+                <div class="stat-label">4星</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">18</div>
+                <div class="stat-label">5星</div>
+            </div>
+            
+        </div>
+
+        <!-- 情绪分布条 -->
+        <div style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 4px;">
+                
+                <span>正向: 48条</span>
+                
+                <span>负向: 17条</span>
+                
+                <span>中性: 23条</span>
+                
+            </div>
+            <div class="sentiment-bar">
+                
+                
+                <div class="seg-positive" style="width: 54.5%;">
+                    54.5%
+                </div>
+                
+                <div class="seg-negative" style="width: 19.3%;">
+                    19.3%
+                </div>
+                
+                <div class="seg-neutral" style="width: 26.1%;">
+                    26.1%
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 总结 -->
+    <div class="card">
+        <h2>AI 总结</h2>
+        <p style="font-size: 15px; line-height: 1.8;">产品在性价比和核心功能上获得了积极认可，但在质量、稳定性和服务方面存在明显短板，导致口碑分化，整体处于中等偏上水平。</p>
+    </div>
+
+    <!-- 图表 -->
+    <div class="card">
+        <h2>数据可视化</h2>
+        <div class="charts">
+            <div><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+                <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/echarts.min.js"></script>
+            <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/themes/macarons.js"></script>
+
+    
+</head>
+<body >
+    <div id="0c47c9d15ab54d7eba029f5857c78aa4" class="chart-container" style="width:500px; height:350px; "></div>
+    <script>
+        var chart_0c47c9d15ab54d7eba029f5857c78aa4 = echarts.init(
+            document.getElementById('0c47c9d15ab54d7eba029f5857c78aa4'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_0c47c9d15ab54d7eba029f5857c78aa4 = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "aria": {
+        "enabled": false
+    },
+    "series": [
+        {
+            "type": "pie",
+            "colorBy": "data",
+            "legendHoverLink": true,
+            "selectedMode": false,
+            "selectedOffset": 10,
+            "clockwise": true,
+            "startAngle": 90,
+            "minAngle": 0,
+            "minShowLabelAngle": 0,
+            "avoidLabelOverlap": true,
+            "stillShowZeroSum": true,
+            "percentPrecision": 2,
+            "showEmptyCircle": true,
+            "emptyCircleStyle": {
+                "color": "lightgray",
+                "borderColor": "#000",
+                "borderWidth": 0,
+                "borderType": "solid",
+                "borderDashOffset": 0,
+                "borderCap": "butt",
+                "borderJoin": "bevel",
+                "borderMiterLimit": 10,
+                "opacity": 1
+            },
+            "data": [
+                {
+                    "name": "\u6b63\u5411",
+                    "value": 48
+                },
+                {
+                    "name": "\u8d1f\u5411",
+                    "value": 17
+                },
+                {
+                    "name": "\u4e2d\u6027",
+                    "value": 23
+                }
+            ],
+            "radius": [
+                "40%",
+                "70%"
+            ],
+            "center": [
+                "50%",
+                "50%"
+            ],
+            "label": {
+                "show": true,
+                "margin": 8,
+                "formatter": "{b}: {c} ({d}%)",
+                "richInheritPlainLabel": true,
+                "valueAnimation": false
+            },
+            "labelLine": {
+                "show": true,
+                "showAbove": false,
+                "length": 15,
+                "length2": 15,
+                "smooth": false,
+                "minTurnAngle": 90,
+                "maxSurfaceAngle": 90
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u6b63\u5411",
+                "\u8d1f\u5411",
+                "\u4e2d\u6027"
+            ],
+            "selected": {},
+            "show": true,
+            "bottom": "0%",
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14,
+            "backgroundColor": "transparent",
+            "borderColor": "#ccc",
+            "borderRadius": 0,
+            "pageButtonItemGap": 5,
+            "pageButtonPosition": "end",
+            "pageFormatter": "{current}/{total}",
+            "pageIconColor": "#2f4554",
+            "pageIconInactiveColor": "#aaa",
+            "pageIconSize": 15,
+            "animationDurationUpdate": 800,
+            "selector": false,
+            "selectorPosition": "auto",
+            "selectorItemGap": 7,
+            "selectorButtonGap": 10,
+            "triggerEvent": false
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "enterable": false,
+        "confine": false,
+        "appendToBody": false,
+        "transitionDuration": 0.4,
+        "displayTransition": true,
+        "textStyle": {
+            "fontSize": 14,
+            "richInheritPlainLabel": true
+        },
+        "borderWidth": 0,
+        "padding": 5,
+        "order": "seriesAsc"
+    },
+    "title": [
+        {
+            "show": true,
+            "text": "\u60c5\u7eea\u5206\u5e03",
+            "target": "blank",
+            "subtarget": "blank",
+            "left": "center",
+            "padding": 5,
+            "itemGap": 10,
+            "textAlign": "auto",
+            "textVerticalAlign": "auto",
+            "triggerEvent": false
+        }
+    ],
+    "color": [
+        "#52c41a",
+        "#f5222d",
+        "#faad14"
+    ]
+};
+        chart_0c47c9d15ab54d7eba029f5857c78aa4.setOption(option_0c47c9d15ab54d7eba029f5857c78aa4);
+    </script>
+</body>
+</html>
+</div>
+            <div><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+                <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/echarts.min.js"></script>
+            <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/themes/macarons.js"></script>
+
+    
+</head>
+<body >
+    <div id="dd34cb689b8d4e82b33e014b1313590e" class="chart-container" style="width:500px; height:350px; "></div>
+    <script>
+        var chart_dd34cb689b8d4e82b33e014b1313590e = echarts.init(
+            document.getElementById('dd34cb689b8d4e82b33e014b1313590e'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_dd34cb689b8d4e82b33e014b1313590e = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "aria": {
+        "enabled": false
+    },
+    "series": [
+        {
+            "type": "bar",
+            "name": "\u8bc4\u8bba\u6570",
+            "legendHoverLink": true,
+            "data": [
+                7,
+                10,
+                23,
+                30,
+                18
+            ],
+            "realtimeSort": false,
+            "showBackground": false,
+            "stackStrategy": "samesign",
+            "cursor": "pointer",
+            "barWidth": "40%",
+            "barMinHeight": 0,
+            "barCategoryGap": "20%",
+            "barGap": "30%",
+            "large": false,
+            "largeThreshold": 400,
+            "seriesLayoutBy": "column",
+            "datasetIndex": 0,
+            "clip": true,
+            "zlevel": 0,
+            "z": 2,
+            "label": {
+                "show": true,
+                "margin": 8,
+                "richInheritPlainLabel": true,
+                "valueAnimation": false
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u8bc4\u8bba\u6570"
+            ],
+            "selected": {},
+            "show": true,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14,
+            "backgroundColor": "transparent",
+            "borderColor": "#ccc",
+            "borderRadius": 0,
+            "pageButtonItemGap": 5,
+            "pageButtonPosition": "end",
+            "pageFormatter": "{current}/{total}",
+            "pageIconColor": "#2f4554",
+            "pageIconInactiveColor": "#aaa",
+            "pageIconSize": 15,
+            "animationDurationUpdate": 800,
+            "selector": false,
+            "selectorPosition": "auto",
+            "selectorItemGap": 7,
+            "selectorButtonGap": 10,
+            "triggerEvent": false
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "enterable": false,
+        "confine": false,
+        "appendToBody": false,
+        "transitionDuration": 0.4,
+        "displayTransition": true,
+        "textStyle": {
+            "fontSize": 14,
+            "richInheritPlainLabel": true
+        },
+        "borderWidth": 0,
+        "padding": 5,
+        "order": "seriesAsc"
+    },
+    "xAxis": [
+        {
+            "name": "\u8bc4\u5206",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "nameTruncate": {},
+            "nameMoveOverlap": true,
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "minInterval": 0,
+            "silent": false,
+            "triggerEvent": false,
+            "splitLine": {
+                "show": true,
+                "lineStyle": {
+                    "show": false
+                }
+            },
+            "animation": true,
+            "animationThreshold": 2000,
+            "animationDuration": 1000,
+            "animationEasing": "cubicOut",
+            "animationDelay": 0,
+            "animationDurationUpdate": 300,
+            "animationEasingUpdate": "cubicOut",
+            "animationDelayUpdate": 0,
+            "data": [
+                "1\u661f",
+                "2\u661f",
+                "3\u661f",
+                "4\u661f",
+                "5\u661f"
+            ]
+        }
+    ],
+    "yAxis": [
+        {
+            "name": "\u6570\u91cf",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "nameTruncate": {},
+            "nameMoveOverlap": true,
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "minInterval": 0,
+            "silent": false,
+            "triggerEvent": false,
+            "splitLine": {
+                "show": true,
+                "lineStyle": {
+                    "show": false
+                }
+            },
+            "animation": true,
+            "animationThreshold": 2000,
+            "animationDuration": 1000,
+            "animationEasing": "cubicOut",
+            "animationDelay": 0,
+            "animationDurationUpdate": 300,
+            "animationEasingUpdate": "cubicOut",
+            "animationDelayUpdate": 0
+        }
+    ],
+    "title": [
+        {
+            "show": true,
+            "text": "\u8bc4\u5206\u5206\u5e03",
+            "target": "blank",
+            "subtarget": "blank",
+            "left": "center",
+            "padding": 5,
+            "itemGap": 10,
+            "textAlign": "auto",
+            "textVerticalAlign": "auto",
+            "triggerEvent": false
+        }
+    ]
+};
+        chart_dd34cb689b8d4e82b33e014b1313590e.setOption(option_dd34cb689b8d4e82b33e014b1313590e);
+    </script>
+</body>
+</html>
+</div>
+        </div>
+        <div style="margin-top: 24px;"><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+                <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/echarts.min.js"></script>
+            <script type="text/javascript" src="https://assets.pyecharts.org/assets/v6/themes/macarons.js"></script>
+
+    
+</head>
+<body >
+    <div id="885a616e7d434622962e1af354baa321" class="chart-container" style="width:700px; height:400px; "></div>
+    <script>
+        var chart_885a616e7d434622962e1af354baa321 = echarts.init(
+            document.getElementById('885a616e7d434622962e1af354baa321'), 'macarons', {renderer: 'canvas', locale: 'ZH'});
+        var option_885a616e7d434622962e1af354baa321 = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "aria": {
+        "enabled": false
+    },
+    "series": [
+        {
+            "type": "bar",
+            "name": "\u51fa\u73b0\u6b21\u6570",
+            "legendHoverLink": true,
+            "data": [
+                17,
+                13,
+                10,
+                8,
+                8,
+                7,
+                7,
+                6,
+                6,
+                6,
+                6,
+                6,
+                6,
+                6,
+                6
+            ],
+            "realtimeSort": false,
+            "showBackground": false,
+            "stackStrategy": "samesign",
+            "cursor": "pointer",
+            "barWidth": "50%",
+            "barMinHeight": 0,
+            "barCategoryGap": "20%",
+            "barGap": "30%",
+            "large": false,
+            "largeThreshold": 400,
+            "seriesLayoutBy": "column",
+            "datasetIndex": 0,
+            "clip": true,
+            "zlevel": 0,
+            "z": 2,
+            "label": {
+                "show": true,
+                "position": "right",
+                "margin": 8,
+                "richInheritPlainLabel": true,
+                "valueAnimation": false
+            },
+            "rippleEffect": {
+                "show": true,
+                "brushType": "stroke",
+                "scale": 2.5,
+                "period": 4
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u51fa\u73b0\u6b21\u6570"
+            ],
+            "selected": {},
+            "show": true,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14,
+            "backgroundColor": "transparent",
+            "borderColor": "#ccc",
+            "borderRadius": 0,
+            "pageButtonItemGap": 5,
+            "pageButtonPosition": "end",
+            "pageFormatter": "{current}/{total}",
+            "pageIconColor": "#2f4554",
+            "pageIconInactiveColor": "#aaa",
+            "pageIconSize": 15,
+            "animationDurationUpdate": 800,
+            "selector": false,
+            "selectorPosition": "auto",
+            "selectorItemGap": 7,
+            "selectorButtonGap": 10,
+            "triggerEvent": false
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "enterable": false,
+        "confine": false,
+        "appendToBody": false,
+        "transitionDuration": 0.4,
+        "displayTransition": true,
+        "textStyle": {
+            "fontSize": 14,
+            "richInheritPlainLabel": true
+        },
+        "borderWidth": 0,
+        "padding": 5,
+        "order": "seriesAsc"
+    },
+    "xAxis": [
+        {
+            "name": "\u6b21\u6570",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "nameTruncate": {},
+            "nameMoveOverlap": true,
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "minInterval": 0,
+            "silent": false,
+            "triggerEvent": false,
+            "splitLine": {
+                "show": true,
+                "lineStyle": {
+                    "show": false
+                }
+            },
+            "animation": true,
+            "animationThreshold": 2000,
+            "animationDuration": 1000,
+            "animationEasing": "cubicOut",
+            "animationDelay": 0,
+            "animationDurationUpdate": 300,
+            "animationEasingUpdate": "cubicOut",
+            "animationDelayUpdate": 0
+        }
+    ],
+    "yAxis": [
+        {
+            "name": "\u5173\u952e\u8bcd",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "nameTruncate": {},
+            "nameMoveOverlap": true,
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "minInterval": 0,
+            "silent": false,
+            "triggerEvent": false,
+            "splitLine": {
+                "show": true,
+                "lineStyle": {
+                    "show": false
+                }
+            },
+            "animation": true,
+            "animationThreshold": 2000,
+            "animationDuration": 1000,
+            "animationEasing": "cubicOut",
+            "animationDelay": 0,
+            "animationDurationUpdate": 300,
+            "animationEasingUpdate": "cubicOut",
+            "animationDelayUpdate": 0,
+            "data": [
+                "\u597d\u8bc4",
+                "\u63a8\u8350",
+                "\u505a\u5de5",
+                "\u5931\u671b",
+                "\u6ee1\u610f",
+                "\u4ef7\u683c",
+                "\u4f53\u9a8c",
+                "\u4e24\u5468",
+                "\u5305\u88c5",
+                "\u7cbe\u7f8e",
+                "\u4e94\u661f",
+                "\u8d28\u91cf",
+                "\u989c\u503c",
+                "\u6309\u952e",
+                "\u677e\u52a8"
+            ]
+        }
+    ],
+    "title": [
+        {
+            "show": true,
+            "text": "\u9ad8\u9891\u5173\u952e\u8bcd TOP15",
+            "target": "blank",
+            "subtarget": "blank",
+            "left": "center",
+            "padding": 5,
+            "itemGap": 10,
+            "textAlign": "auto",
+            "textVerticalAlign": "auto",
+            "triggerEvent": false
+        }
+    ]
+};
+        chart_885a616e7d434622962e1af354baa321.setOption(option_885a616e7d434622962e1af354baa321);
+    </script>
+</body>
+</html>
+</div>
+    </div>
+
+    <!-- 高频关键词 -->
+    <div class="card">
+        <h2>高频关键词</h2>
+        <div class="tags">
+            
+            <span class="tag">好评<span class="count">17</span></span>
+            
+            <span class="tag">推荐<span class="count">13</span></span>
+            
+            <span class="tag">做工<span class="count">10</span></span>
+            
+            <span class="tag">失望<span class="count">8</span></span>
+            
+            <span class="tag">满意<span class="count">8</span></span>
+            
+            <span class="tag">价格<span class="count">7</span></span>
+            
+            <span class="tag">体验<span class="count">7</span></span>
+            
+            <span class="tag">两周<span class="count">6</span></span>
+            
+            <span class="tag">包装<span class="count">6</span></span>
+            
+            <span class="tag">精美<span class="count">6</span></span>
+            
+            <span class="tag">五星<span class="count">6</span></span>
+            
+            <span class="tag">质量<span class="count">6</span></span>
+            
+            <span class="tag">颜值<span class="count">6</span></span>
+            
+            <span class="tag">按键<span class="count">6</span></span>
+            
+            <span class="tag">松动<span class="count">6</span></span>
+            
+            <span class="tag">噪音<span class="count">6</span></span>
+            
+            <span class="tag">续航<span class="count">6</span></span>
+            
+            <span class="tag">整体<span class="count">6</span></span>
+            
+            <span class="tag">音质<span class="count">6</span></span>
+            
+            <span class="tag">清晰<span class="count">6</span></span>
+            
+        </div>
+    </div>
+
+    <!-- 用户认可优点 -->
+    <div class="card">
+        <h2>用户认可的优点</h2>
+        <ul class="point-list">
+            
+            <li>性价比高，普遍认为‘对得起这个价格’、‘物超所值’</li>
+            
+            <li>核心功能表现突出，如‘画质出色’、‘音质清晰’</li>
+            
+            <li>设计美观、做工精致，‘颜值很高’、‘包装精美’获得好评</li>
+            
+            <li>部分用户体验良好，‘运行流畅’、‘续航给力’</li>
+            
+        </ul>
+    </div>
+
+    <!-- 核心痛点 -->
+    <div class="card">
+        <h2>核心痛点</h2>
+        
+        <div class="pain-card ">
+            <h3>
+                硬件质量与做工问题突出
+                <span class="badge badge-high">高</span>
+            </h3>
+            <p>产品物理结构存在缺陷，影响基础使用感受和品质感知。</p>
+            <p class="evidence">依据：‘按键松动，做工也很粗糙’；‘做工也很粗糙，踩雷了’（高频出现）</p>
+        </div>
+        
+        <div class="pain-card ">
+            <h3>
+                产品稳定性与可靠性差
+                <span class="badge badge-high">高</span>
+            </h3>
+            <p>设备在软件或硬件层面不稳定，导致卡顿、闪退、功能异常，严重影响使用。</p>
+            <p class="evidence">依据：‘连接不稳定’；‘经常卡顿’；‘频繁闪退’；‘bug太多了’（高频出现）</p>
+        </div>
+        
+        <div class="pain-card medium">
+            <h3>
+                存在明显的功能缺陷
+                <span class="badge badge-medium">中</span>
+            </h3>
+            <p>产品在发热、噪音、信号、续航等基础性能上未达到用户预期。</p>
+            <p class="evidence">依据：‘发热严重’；‘噪音太大’；‘信号差’；‘耗电快’、‘续航差’</p>
+        </div>
+        
+        <div class="pain-card medium">
+            <h3>
+                售后服务与物流体验不佳
+                <span class="badge badge-medium">中</span>
+            </h3>
+            <p>客服响应和物流时效拖累了整体购物和使用体验。</p>
+            <p class="evidence">依据：‘客服回复也很慢’；‘等了好久才发货’</p>
+        </div>
+        
+        <div class="pain-card medium">
+            <h3>
+                开箱体验与配件问题
+                <span class="badge badge-medium">中</span>
+            </h3>
+            <p>部分产品到手即损坏或配件不全，导致首次体验极差。</p>
+            <p class="evidence">依据：‘收到就有问题’；‘配件缺失’；‘跟描述不符’</p>
+        </div>
+        
+        <div class="pain-card low">
+            <h3>
+                产品说明书不清晰
+                <span class="badge badge-low">低</span>
+            </h3>
+            <p>文档指导性不足，增加了用户的使用和学习成本。</p>
+            <p class="evidence">依据：‘说明书不清楚’</p>
+        </div>
+        
+    </div>
+
+    <!-- 用户潜在需求 -->
+    <div class="card">
+        <h2>用户潜在需求</h2>
+        <ul class="needs-list">
+            
+            <li>可靠耐用的产品质量，避免频繁出现故障</li>
+            
+            <li>稳定流畅、功能正常的使用体验</li>
+            
+            <li>高性价比，物有所值</li>
+            
+            <li>及时、专业的客户服务支持</li>
+            
+            <li>清晰的使用指引和完善的配件</li>
+            
+        </ul>
+    </div>
+
+    <!-- 产品改进建议 -->
+    <div class="card">
+        <h2>产品改进建议</h2>
+        
+        <div class="suggestion-item">
+            <span class="badge badge-high">高优</span>
+            <div>
+                <strong>优化硬件制造与品控</strong>
+                <div class="reason">做工粗糙和按键松动是最高频的负面反馈，严重损害产品口碑，是提升用户满意度的基石。</div>
+            </div>
+        </div>
+        
+        <div class="suggestion-item">
+            <span class="badge badge-high">高优</span>
+            <div>
+                <strong>系统与软件稳定性攻坚</strong>
+                <div class="reason">连接、卡顿、闪退、Bug多等问题导致核心使用体验崩坏，需投入研发资源彻底排查和修复。</div>
+            </div>
+        </div>
+        
+        <div class="suggestion-item">
+            <span class="badge badge-medium">中优</span>
+            <div>
+                <strong>建立快速客户服务与问题产品召回机制</strong>
+                <div class="reason">客服响应慢和发货延迟加剧了用户负面情绪，针对‘收到就有问题’等情况应有快速的退换货或上门维修通道。</div>
+            </div>
+        </div>
+        
+        <div class="suggestion-item">
+            <span class="badge badge-medium">中优</span>
+            <div>
+                <strong>针对具体性能缺陷进行优化</strong>
+                <div class="reason">对于发热、噪音、信号、续航等集中的功能性投诉，应成立专项小组进行硬件或算法层面的优化迭代。</div>
+            </div>
+        </div>
+        
+        <div class="suggestion-item">
+            <span class="badge badge-low">低优</span>
+            <div>
+                <strong>完善产品附件与文档</strong>
+                <div class="reason">优化包装内配件清单的检查流程，并重新设计用户手册，使其更图文并茂、易于理解。</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- 营销与运营建议 -->
+    <div class="card">
+        <h2>营销与运营建议</h2>
+        <ul class="marketing-list">
+            
+            <li>强化‘性价比’和核心卖点（如画质、音质）的宣传，吸引价格敏感型用户，并引导已有满意用户进行‘朋友推荐’式传播</li>
+            
+            <li>营销内容可围绕‘用了两周，依然满意’等时间维度展开，突出产品的耐用性和长期价值，建立信任</li>
+            
+            <li>建立用户社群或晒单有奖活动，鼓励正向口碑分享，同时将社群作为快速收集问题、安抚不满用户的前线渠道</li>
+            
+            <li>针对物流和客服问题，可在营销中承诺‘发货时效’和‘客服XX分钟响应’，并切实做到，将服务短板转化为营销亮点</li>
+            
+        </ul>
+    </div>
+
+    <!-- 评论样例 -->
+    <div class="card">
+        <h2>评论样例（随机 10 条）</h2>
+        <div style="overflow-x: auto;">
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户</th>
+                        <th>评分</th>
+                        <th>评论内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>R0029</td>
+                        <td>热心的买家</td>
+                        <td class="rating-stars">★★★☆☆</td>
+                        <td>凑合用，将就着用，对得起这个价格。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0009</td>
+                        <td>认真的小白</td>
+                        <td class="rating-stars">★☆☆☆☆</td>
+                        <td>按键松动，做工也很粗糙，踩雷了。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0088</td>
+                        <td>低调的用户</td>
+                        <td class="rating-stars">★★★☆☆</td>
+                        <td>整体一般吧，体验普通，中规中矩。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0015</td>
+                        <td>低调的买家</td>
+                        <td class="rating-stars">★★★★☆</td>
+                        <td>第一次买这个品牌，噪音小，超出预期。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0026</td>
+                        <td>认真的粉丝</td>
+                        <td class="rating-stars">★★★★★</td>
+                        <td>朋友推荐的，运行流畅，果然没让我失望。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0060</td>
+                        <td>爱买的网友</td>
+                        <td class="rating-stars">★☆☆☆☆</td>
+                        <td>噪音太大，声音失真，影响使用。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0083</td>
+                        <td>爱买的测评君</td>
+                        <td class="rating-stars">★★★☆☆</td>
+                        <td>经常卡顿，做工也很粗糙，踩雷了。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0025</td>
+                        <td>普通的路人</td>
+                        <td class="rating-stars">★★★★☆</td>
+                        <td>功能强大，操作简单，非常满意！</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0069</td>
+                        <td>快乐的网友</td>
+                        <td class="rating-stars">★★★☆☆</td>
+                        <td>马马虎虎，体验普通，能接受。</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>R0023</td>
+                        <td>暴躁的买家</td>
+                        <td class="rating-stars">★★★☆☆</td>
+                        <td>跟描述不符，连接不稳定，很失望。</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>Product Review AI Report · 自动生成</footer>
+
+</div>
+</body>
+</html>

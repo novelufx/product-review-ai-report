@@ -10,6 +10,7 @@ env/
 
 # Data files (keep structure, ignore content)
 data/*.csv
+data/*.json
 !data/.gitkeep
 
 # Environment
@@ -29,6 +30,5 @@ Thumbs.db
 reports/*.html
 !reports/.gitkeep
 
-# Docs (generated)
-docs/*.html
-!docs/.gitkeep
+# Docs - committed for GitHub Pages
+# docs/*.html
