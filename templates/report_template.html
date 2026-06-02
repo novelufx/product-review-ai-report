@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam 游戏评论 AI 口碑分析报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
+
+        /* Banner */
+        .banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 48px 24px 56px; text-align: center; position: relative; overflow: hidden; }
+        .banner::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 40px; background: #f0f2f5; border-radius: 50% 50% 0 0; }
+        .banner h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .banner p { font-size: 15px; opacity: 0.85; }
+
+        /* Layout */
+        .container { max-width: 960px; margin: -24px auto 0; padding: 0 16px 40px; position: relative; z-index: 1; }
+
+        /* Cards */
+        .card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+        .card h2 { font-size: 17px; color: #1a1a1a; border-left: 4px solid #667eea; padding-left: 12px; margin-bottom: 20px; }
+
+        /* Stats grid */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+        .stat-box { text-align: center; padding: 20px 8px; background: linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%); border-radius: 10px; }
+        .stat-value { font-size: 2em; font-weight: 700; color: #667eea; }
+        .stat-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+        /* Sentiment bar */
+        .sentiment-bar { display: flex; border-radius: 8px; overflow: hidden; height: 28px; margin-top: 12px; }
+        .sentiment-bar div { display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 600; }
+        .seg-positive { background: #52c41a; }
+        .seg-neutral { background: #faad14; }
+        .seg-negative { background: #ff4d4f; }
+
+        /* Charts */
+        .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 640px) { .charts { grid-template-columns: 1fr; } }
+
+        /* Positive points */
+        .point-list { list-style: none; padding: 0; }
+        .point-list li { padding: 10px 14px; margin-bottom: 8px; background: #f6ffed; border-left: 4px solid #52c41a; border-radius: 6px; font-size: 14px; }
+
+        /* Pain points */
+        .pain-card { background: #fafafa; border-radius: 10px; padding: 18px; margin-bottom: 14px; border-left: 5px solid #ff4d4f; }
+        .pain-card.medium { border-left-color: #faad14; }
+        .pain-card.low { border-left-color: #52c41a; }
+        .pain-card h3 { font-size: 15px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .pain-card p { font-size: 14px; color: #555; margin-bottom: 4px; }
+        .pain-card .evidence { font-style: italic; color: #888; font-size: 13px; }
+        .badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 12px; color: #fff; font-weight: 600; }
+        .badge-high { background: #ff4d4f; }
+        .badge-medium { background: #faad14; }
+        .badge-low { background: #52c41a; }
+
+        /* Suggestions */
+        .suggestion-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item strong { font-size: 14px; }
+        .suggestion-item .reason { font-size: 13px; color: #666; margin-top: 2px; }
+
+        /* Keyword tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { display: inline-block; background: linear-gradient(135deg, #e6f4ff, #dbeafe); color: #3b82f6; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+        .tag .count { color: #93c5fd; margin-left: 4px; font-size: 11px; }
+
+        /* Needs list */
+        .needs-list { list-style: none; padding: 0; }
+        .needs-list li { padding: 10px 14px; margin-bottom: 8px; background: #fff7e6; border-left: 4px solid #faad14; border-radius: 6px; font-size: 14px; }
+
+        /* Marketing */
+        .marketing-list { list-style: none; padding: 0; }
+        .marketing-list li { padding: 10px 14px; margin-bottom: 8px; background: #f0f5ff; border-left: 4px solid #2f54eb; border-radius: 6px; font-size: 14px; }
+
+        /* Reviews table */
+        .review-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .review-table th { background: #f5f7fa; padding: 10px 12px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #e8e8e8; }
+        .review-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        .review-table tr:hover td { background: #fafafa; }
+        .rating-stars { color: #faad14; letter-spacing: 1px; }
+
+        footer { text-align: center; color: #bbb; font-size: 13px; margin-top: 32px; padding: 24px 0; }
+    </style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">
+    <h1>Steam 游戏评论 AI 口碑分析报告</h1>
+    <p>基于 {{ total_reviews }} 条玩家评论的 AI 智能分析</p>
+</div>
+
+<div class="container">
+
+    <!-- 核心指标 -->
+    <div class="card">
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value">{{ total_reviews }}</div>
+                <div class="stat-label">总评论数</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ "%.1f"|format(average_rating) }}</div>
+                <div class="stat-label">平均评分</div>
+            </div>
+            {% for rating, count in rating_distribution.items()|sort %}
+            <div class="stat-box">
+                <div class="stat-value">{{ count }}</div>
+                <div class="stat-label">{{ rating }}星</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 情绪分布条 -->
+        <div style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 4px;">
+                {% for label, count in sentiment_counts.items() %}
+                <span>{{ label }}: {{ count }}条</span>
+                {% endfor %}
+            </div>
+            <div class="sentiment-bar">
+                {% set total = total_reviews if total_reviews > 0 else 1 %}
+                {% for label, count in sentiment_counts.items() %}
+                <div class="seg-{% if label == '正向' %}positive{% elif label == '中性' %}neutral{% else %}negative{% endif %}" style="width: {{ (count / total * 100)|round(1) }}%;">
+                    {{ (count / total * 100)|round(1) }}%
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 总结 -->
+    <div class="card">
+        <h2>AI 总结</h2>
+        <p style="font-size: 15px; line-height: 1.8;">{{ summary }}</p>
+    </div>
+
+    <!-- 图表 -->
+    <div class="card">
+        <h2>数据可视化</h2>
+        <div class="charts">
+            <div>{{ chart_sentiment }}</div>
+            <div>{{ chart_rating }}</div>
+        </div>
+        <div style="margin-top: 24px;">{{ chart_keyword }}</div>
+    </div>
+
+    <!-- 高频关键词 -->
+    <div class="card">
+        <h2>高频关键词</h2>
+        <div class="tags">
+            {% for kw in keywords[:20] %}
+            <span class="tag">{{ kw.word }}<span class="count">{{ kw.count }}</span></span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 用户认可优点 -->
+    <div class="card">
+        <h2>玩家认可的优点</h2>
+        <ul class="point-list">
+            {% for point in positive_points %}
+            <li>{{ point }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 核心痛点 -->
+    <div class="card">
+        <h2>玩家核心痛点</h2>
+        {% for p in pain_points %}
+        <div class="pain-card {% if p.severity == 'medium' %}medium{% elif p.severity == 'low' %}low{% endif %}">
+            <h3>
+                {{ p.title }}
+                <span class="badge badge-{{ p.severity }}">{% if p.severity == 'high' %}高{% elif p.severity == 'medium' %}中{% else %}低{% endif %}</span>
+            </h3>
+            <p>{{ p.description }}</p>
+            <p class="evidence">依据：{{ p.evidence }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 用户潜在需求 -->
+    <div class="card">
+        <h2>玩家潜在需求</h2>
+        <ul class="needs-list">
+            {% for need in user_needs %}
+            <li>{{ need }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 产品改进建议 -->
+    <div class="card">
+        <h2>产品改进建议</h2>
+        {% for s in improvement_suggestions %}
+        <div class="suggestion-item">
+            <span class="badge badge-{{ s.priority }}">{% if s.priority == 'high' %}高优{% elif s.priority == 'medium' %}中优{% else %}低优{% endif %}</span>
+            <div>
+                <strong>{{ s.title }}</strong>
+                <div class="reason">{{ s.reason }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 营销与运营建议 -->
+    <div class="card">
+        <h2>营销与运营建议</h2>
+        <ul class="marketing-list">
+            {% for s in marketing_suggestions %}
+            <li>{{ s }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 评论样例 -->
+    <div class="card">
+        <h2>评论样例（随机 10 条）</h2>
+        <div style="overflow-x: auto;">
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户</th>
+                        <th>评分</th>
+                        <th>评论内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in sample_reviews %}
+                    <tr>
+                        <td>{{ r.review_id }}</td>
+                        <td>{{ r.username }}</td>
+                        <td class="rating-stars">{% for _ in range(r.rating|int) %}★{% endfor %}{% for _ in range(5 - r.rating|int) %}☆{% endfor %}</td>
+                        <td>{{ r.content }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>Steam 游戏评论 AI 口碑分析 · 自动生成</footer>
+
+</div>
+</body>
+</html>
