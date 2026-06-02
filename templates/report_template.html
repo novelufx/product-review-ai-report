@@ -218,6 +218,7 @@
     <!-- 评论样例 -->
     <div class="card">
         <h2>评论样例（随机 10 条）</h2>
+        {% if sample_reviews %}
         <div style="overflow-x: auto;">
             <table class="review-table">
                 <thead>
@@ -240,6 +241,9 @@
                 </tbody>
             </table>
         </div>
+        {% else %}
+        <p style="color: #999; text-align: center;">暂无评论样例</p>
+        {% endif %}
     </div>
 
     <footer>Steam 游戏评论 AI 口碑分析 · 自动生成</footer>

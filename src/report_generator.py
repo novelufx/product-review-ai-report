@@ -24,8 +24,12 @@ class ReportGenerator:
             return json.load(f)
 
     def _load_csv(self, path: Path, limit: int = 10) -> List[Dict[str, str]]:
-        with open(path, "r", encoding="utf-8") as f:
+        if not path.exists():
+            return []
+        with open(path, "r", encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
+        if not rows:
+            return []
         random.shuffle(rows)
         return rows[:limit]
 

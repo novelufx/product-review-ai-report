@@ -30,8 +30,8 @@ class ReviewCleaner:
         return reviews, stats
 
     def _read_csv(self, path: str) -> List[Dict[str, str]]:
-        """读取 CSV"""
-        with open(path, "r", encoding="utf-8") as f:
+        """读取 CSV（自动处理 BOM）"""
+        with open(path, "r", encoding="utf-8-sig") as f:
             return list(csv.DictReader(f))
 
     def _remove_empty_content(self, reviews: List[Dict[str, str]]) -> List[Dict[str, str]]:
